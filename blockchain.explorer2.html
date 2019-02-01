@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blockchain Explorer</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- Styles -->
+    <style>
+      body {
+        padding-top: 20px;
+      }
+      h1 {
+        margin: 20px 0px;
+      }
+      .btn-sm, .btn-group-sm>.btn {
+    padding: 5px 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 0;
+}
+
+.btn-my {
+    color: #ffffff;
+    background-color: #2780e3;
+    border-color: #2780e3;
+    width:120px;
+}
+
+.btn-my2 {   
+    color: #ffffff;
+    background-color: #3fb618;
+    border-color: #3fb618;
+    width:80px;
+}
+.thead-inverse {
+    background-color: #293640;
+    color: #FFF;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.btn {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 10px 18px;
+    font-size: 15px;
+    line-height: 1.42857143;
+    border-radius: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+user agent stylesheet
+i, cite, em, var, address, dfn {
+    font-style: italic;
+}
+
+.boxi {
+    background-color: #104050;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: lighter;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+user agent stylesheet
+div {
+    display: block;
+}
+    </style>
+  </head>
+  <body onload="dataload()">
+    <div class="container">
+      <div class="row">
+       <div class="boxi ng-binding" style="clear:both;">information of block <i class="fa fa-cube" aria-hidden="true"></i> Block 275830</div>
+       
+      </div>
+      </div>
+      <div class="container">
+            <!-- <h2>Card Header and Footer</h2> -->
+            <div class="card">
+              <div class="card-header">Summary</div>
+              <div class="card-body">
+                    <p><b>Block Number:</b><span style="margin-left:8px;" class="text-primary" id="bknum"></span></p><br>
+                    <p><b>Block Hash:</b><span   style="margin-left:10px;" class="text-dark" id="bkhash"></span></p><br>
+                    <p><b>Recived Time:</b><span  style="margin-left:10px;" class="text-dark" id="bktime"></span></p><br>
+                    <!-- <tr>Confirmations:&nbsp;&nbsp;<span id="bktime"></span></tr><br> -->                    
+                    <p><b>Difficulty:</b><span  style="margin-left:10px;"  class="text-dark" id="bkdiff"></span></p><br> 
+                    <p><b>Size:</b><span   style="margin-left:10px;" class="text-dark"id="bksze"></span></p><br>
+                    <p><b>Data:</b><span   style="margin-left:10px;" class="text-dark" id="bkdata"></span></p><br> 
+              </div> 
+              <div class="card-footer">
+                    <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                              <li class="page-item"><a class="page-link" onclick="cleardetails()" href="blockchain.explorer.html">Previous</a></li>         
+                              <!-- <li class="page-item"><a class="page-link" href="#">Next</a></li> -->
+                            </ul>
+                          </nav>
+              </div>
+            </div>
+          </div>
+          
+ 
+   
+          
+<!-- Bootstrap -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="./app.js"></script>
+    <script>
+      var provider = 'http://18.224.59.176:8545'; //Your Infura Endpoint
+      var web3Provider = new Web3.providers.HttpProvider(provider);
+      var web3 = new Web3(web3Provider);
+var latestBlock = web3.eth.blockNumber;
+// List blocks in table
+//       for (var i = 0; i < 11; i++) {
+        
+//         var block = web3.eth.getBlock(latestBlock - i);
+//         console.log(block)
+//         var number = block.number;
+//         var hash = block.hash;
+//         var time = block.timestamp;
+//         var gas = block.gasUsed;
+//         var size = block.size
+//         //var sender = web3.eth.getTransaction(hash.from);
+// var hours,minutes,seconds,arr;
+//         var el = '.timer';
+// var start = 1385132831,
+//     cDisplay = $(el);
+// var format = function (t) {
+//      hours = Math.floor(t / 3600),
+//         minutes = Math.floor(t / 60 % 60),
+//         seconds = Math.floor(t % 60),
+//     }
+//     if (minutes > 0 || hours > 0) {
+//         arr.push(minutes > 1 ? minutes + ' mins' : minutes + ' min');
+//     }
+//     if (seconds > 0 || minutes > 0 || hours > 0) {
+//         arr.push(seconds > 1 ? seconds + ' secs' : seconds + ' sec');
+//     }   
+    
+//   //  cDisplay.html(minutes);    
+// };
+// // setInterval(function () {
+// //     format(new Date().getTime() / 1000 - time);
+// // }, 1000);
+//   format(new Date().getTime() / 1000 - time);
+
+
+
+
+
+//         convertTimestamp(time);
+// function convertTimestamp(time) {
+//             var d = new Date(time * 1000), // Convert the passed timestamp to milliseconds
+//                 yyyy = d.getFullYear(),
+//                 mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+//                 dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+//                 hh = d.getHours(),
+//                 h = hh,
+//                 min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+//                 ampm = 'AM',
+//                 time;
+// if (hh > 12) {
+//                 h = hh - 12;
+//                 ampm = 'PM';
+//             } else if (hh === 12) {
+//                 h = 12;
+//                 ampm = 'PM';
+//             } else if (hh == 0) {
+//                 h = 12;
+//             }
+
+//             time1 = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+//             return time1;
+//         }
+        
+        
+//         $('tbody').append("<tr> <td><button class='btn btn-sm btn-my2' href='' >" + number + "</button></td>  <td><button href='' class='btn btn-sm btn-my'>"+hash+"</button></td>  <td>" + size+" Kb" + "</td>  <td> "+minutes+"Min "+seconds+" Sec ago" +" </td> </tr>");
+//       }    arr = [];
+//     }
+//     if (minutes > 0 || hours > 0) {
+//         arr.push(minutes > 1 ? minutes + ' mins' : minutes + ' min');
+//     }
+//     if (seconds > 0 || minutes > 0 || hours > 0) {
+//         arr.push(seconds > 1 ? seconds + ' secs' : seconds + ' sec');
+//     }   
+    
+//   //  cDisplay.html(minutes);    
+// };
+// // setInterval(function () {
+// //     format(new Date().getTime() / 1000 - time);
+// // }, 1000);
+//   format(new Date().getTime() / 1000 - time);
+
+
+
+
+
+//         convertTimestamp(time);
+// function convertTimestamp(time) {
+//             var d = new Date(time * 1000), // Convert the passed timestamp to milliseconds
+//                 yyyy = d.getFullYear(),
+//                 mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+//                 dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+//                 hh = d.getHours(),
+//                 h = hh,
+//                 min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+//                 ampm = 'AM',
+//                 time;
+// if (hh > 12) {
+//                 h = hh - 12;
+//                 ampm = 'PM';
+//             } else if (hh === 12) {
+//                 h = 12;
+//                 ampm = 'PM';
+//             } else if (hh == 0) {
+//                 h = 12;
+//             }
+
+//             time1 = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+//             return time1;
+//         }
+        
+        
+//         $('tbody').append("<tr> <td><button class='btn btn-sm btn-my2' href='' >" + number + "</button></td>  <td><button href='' class='btn btn-sm btn-my'>"+hash+"</button></td>  <td>" + size+" Kb" + "</td>  <td> "+minutes+"Min "+seconds+" Sec ago" +" </td> </tr>");
+//       }if (hours > 0) {
+//     }
+//     if (minutes > 0 || hours > 0) {
+//         arr.push(minutes > 1 ? minutes + ' mins' : minutes + ' min');
+//     }
+//     if (seconds > 0 || minutes > 0 || hours > 0) {
+//         arr.push(seconds > 1 ? seconds + ' secs' : seconds + ' sec');
+//     }   
+    
+//   //  cDisplay.html(minutes);    
+// };
+// // setInterval(function () {
+// //     format(new Date().getTime() / 1000 - time);
+// // }, 1000);
+//   format(new Date().getTime() / 1000 - time);
+
+
+
+
+
+//         convertTimestamp(time);
+// function convertTimestamp(time) {
+//             var d = new Date(time * 1000), // Convert the passed timestamp to milliseconds
+//                 yyyy = d.getFullYear(),
+//                 mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+//                 dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+//                 hh = d.getHours(),
+//                 h = hh,
+//                 min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+//                 ampm = 'AM',
+//                 time;
+// if (hh > 12) {
+//                 h = hh - 12;
+//                 ampm = 'PM';
+//             } else if (hh === 12) {
+//                 h = 12;
+//                 ampm = 'PM';
+//             } else if (hh == 0) {
+//                 h = 12;
+//             }
+
+//             time1 = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+//             return time1;
+//         }
+        
+        
+//         $('tbody').append("<tr> <td><button class='btn btn-sm btn-my2' href='' >" + number + "</button></td>  <td><button href='' class='btn btn-sm btn-my'>"+hash+"</button></td>  <td>" + size+" Kb" + "</td>  <td> "+minutes+"Min "+seconds+" Sec ago" +" </td> </tr>");
+//       }    arr.push(hours == 1 ? '1 hr' : hours + 'hrs');
+//     }
+//     if (minutes > 0 || hours > 0) {
+//         arr.push(minutes > 1 ? minutes + ' mins' : minutes + ' min');
+//     }
+//     if (seconds > 0 || minutes > 0 || hours > 0) {
+//         arr.push(seconds > 1 ? seconds + ' secs' : seconds + ' sec');
+//     }   
+    
+//   //  cDisplay.html(minutes);    
+// };
+// // setInterval(function () {
+// //     format(new Date().getTime() / 1000 - time);
+// // }, 1000);
+//   format(new Date().getTime() / 1000 - time);
+
+
+
+
+
+//         convertTimestamp(time);
+// function convertTimestamp(time) {
+//             var d = new Date(time * 1000), // Convert the passed timestamp to milliseconds
+//                 yyyy = d.getFullYear(),
+//                 mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+//                 dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+//                 hh = d.getHours(),
+//                 h = hh,
+//                 min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+//                 ampm = 'AM',
+//                 time;
+// if (hh > 12) {
+//                 h = hh - 12;
+//                 ampm = 'PM';
+//             } else if (hh === 12) {
+//                 h = 12;
+//                 ampm = 'PM';
+//             } else if (hh == 0) {
+//                 h = 12;
+//             }
+
+//             time1 = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+//             return time1;
+//         }
+        
+        
+//         $('tbody').append("<tr> <td><button class='btn btn-sm btn-my2' href='' >" + number + "</button></td>  <td><button href='' class='btn btn-sm btn-my'>"+hash+"</button></td>  <td>" + size+" Kb" + "</td>  <td> "+minutes+"Min "+seconds+" Sec ago" +" </td> </tr>");
+//       }}
+//     if (minutes > 0 || hours > 0) {
+//         arr.push(minutes > 1 ? minutes + ' mins' : minutes + ' min');
+//     }
+//     if (seconds > 0 || minutes > 0 || hours > 0) {
+//         arr.push(seconds > 1 ? seconds + ' secs' : seconds + ' sec');
+//     }   
+    
+//   //  cDisplay.html(minutes);    
+// };
+// // setInterval(function () {
+// //     format(new Date().getTime() / 1000 - time);
+// // }, 1000);
+//   format(new Date().getTime() / 1000 - time);
+
+
+
+
+
+//         convertTimestamp(time);
+// function convertTimestamp(time) {
+//             var d = new Date(time * 1000), // Convert the passed timestamp to milliseconds
+//                 yyyy = d.getFullYear(),
+//                 mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+//                 dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+//                 hh = d.getHours(),
+//                 h = hh,
+//                 min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+//                 ampm = 'AM',
+//                 time;
+// if (hh > 12) {
+//                 h = hh - 12;
+//                 ampm = 'PM';
+//             } else if (hh === 12) {
+//                 h = 12;
+//                 ampm = 'PM';
+//             } else if (hh == 0) {
+//                 h = 12;
+//             }
+
+//             time1 = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+//             return time1;
+//         }
+        
+        
+//         $('tbody').append("<tr> <td><button class='btn btn-sm btn-my2' href='' >" + number + "</button></td>  <td><button href='' class='btn btn-sm btn-my'>"+hash+"</button></td>  <td>" + size+" Kb" + "</td>  <td> "+minutes+"Min "+seconds+" Sec ago" +" </td> </tr>");
+//       }
+    </script>
+  </body>
+</html>
+
